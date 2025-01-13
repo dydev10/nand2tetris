@@ -12,4 +12,19 @@ CHIP Xor {
 
     PARTS:
     //// Replace this comment with your code.
+    
+    // nota
+    Nand(a=a , b=a , out=nota );
+
+    // notb
+    Nand(a=b , b=b , out=notb );
+
+    // notaNandb
+    Nand(a=nota , b=b , out=notaNandb );
+    
+    // aNandNotb
+    Nand(a=a , b=notb , out=aNandNotb );
+
+    // output
+    Nand(a=notaNandb , b=aNandNotb , out=out );
 }
