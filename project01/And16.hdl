@@ -12,5 +12,52 @@ CHIP And16 {
     OUT out[16];
 
     PARTS:
-    //// Replace this comment with your code.
+
+    Nand(a=a[0] , b=b[0] , out=aAndb0 );
+    Nand(a=aAndb0 , b=aAndb0 , out=out[0] );
+    
+    Nand(a=a[1] , b=b[1] , out=aAndb1 );
+    Nand(a=aAndb1 , b=aAndb1 , out=out[1] );
+    
+    Nand(a=a[2] , b=b[2] , out=aAndb2 );
+    Nand(a=aAndb2 , b=aAndb2 , out=out[2] );
+    
+    Nand(a=a[3] , b=b[3] , out=aAndb3 );
+    Nand(a=aAndb3 , b=aAndb3 , out=out[3] );
+    
+    Nand(a=a[4] , b=b[4] , out=aAndb4 );
+    Nand(a=aAndb4 , b=aAndb4 , out=out[4] );
+    
+    Nand(a=a[5] , b=b[5] , out=aAndb5 );
+    Nand(a=aAndb5 , b=aAndb5 , out=out[5] );
+    
+    Nand(a=a[6] , b=b[6] , out=aAndb6 );
+    Nand(a=aAndb6 , b=aAndb6 , out=out[6] );
+
+    Nand(a=a[7] , b=b[7] , out=aAndb7 );
+    Nand(a=aAndb7 , b=aAndb7 , out=out[7] );
+    
+    Nand(a=a[8] , b=b[8] , out=aAndb8 );
+    Nand(a=aAndb8 , b=aAndb8 , out=out[8] );
+    
+    Nand(a=a[9] , b=b[9] , out=aAndb9 );
+    Nand(a=aAndb9 , b=aAndb9, out=out[9] );
+    
+    Nand(a=a[10] , b=b[10] , out=aAndb10 );
+    Nand(a=aAndb10 , b=aAndb10 , out=out[10] );
+    
+    Nand(a=a[11] , b=b[11] , out=aAndb11 );
+    Nand(a=aAndb11 , b=aAndb11 , out=out[11] );
+    
+    Nand(a=a[12] , b=b[12] , out=aAndb12 );
+    Nand(a=aAndb12 , b=aAndb12 , out=out[12] );
+    
+    Nand(a=a[13] , b=b[13] , out=aAndb13 );
+    Nand(a=aAndb13 , b=aAndb13 , out=out[13] );
+    
+    Nand(a=a[14] , b=b[14] , out=aAndb14 );
+    Nand(a=aAndb14 , b=aAndb14 , out=out[14] );
+    
+    Nand(a=a[15] , b=b[15] , out=aAndb15);
+    Nand(a=aAndb15 , b=aAndb15 , out=out[15] );
 }
