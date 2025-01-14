@@ -12,5 +12,118 @@ CHIP Mux16 {
     OUT out[16];
 
     PARTS:
-    //// Replace this comment with your code.
+    // notsel
+    Nand(a=sel , b=sel , out=notsel);
+    
+    // aNandNotsel
+    Nand(a=a[0], b=notsel, out=aNandNotsel0);
+    // bNandsel
+    Nand(a=b[0], b=sel, out=bNandsel0);
+    // output
+    Nand(a=aNandNotsel0, b=bNandsel0, out=out[0]);
+
+    // aNandNotsel
+    Nand(a=a[1], b=notsel, out=aNandNotsel1);
+    // bNandsel
+    Nand(a=b[1], b=sel, out=bNandsel1);
+    // output
+    Nand(a=aNandNotsel1, b=bNandsel1, out=out[1]);
+
+    // aNandNotsel
+    Nand(a=a[2], b=notsel, out=aNandNotsel2);
+    // bNandsel
+    Nand(a=b[2], b=sel, out=bNandsel2);
+    // output
+    Nand(a=aNandNotsel2, b=bNandsel2, out=out[2]);
+
+    // aNandNotsel
+    Nand(a=a[3], b=notsel, out=aNandNotsel3);
+    // bNandsel
+    Nand(a=b[3], b=sel, out=bNandsel3);
+    // output
+    Nand(a=aNandNotsel3, b=bNandsel3, out=out[3]);
+
+    // aNandNotsel
+    Nand(a=a[4], b=notsel, out=aNandNotsel4);
+    // bNandsel
+    Nand(a=b[4], b=sel, out=bNandsel4);
+    // output
+    Nand(a=aNandNotsel4, b=bNandsel4, out=out[4]);
+
+    // aNandNotsel
+    Nand(a=a[5], b=notsel, out=aNandNotsel5);
+    // bNandsel
+    Nand(a=b[5], b=sel, out=bNandsel5);
+    // output
+    Nand(a=aNandNotsel5, b=bNandsel5, out=out[5]);
+
+    // aNandNotsel
+    Nand(a=a[6], b=notsel, out=aNandNotsel6);
+    // bNandsel
+    Nand(a=b[6], b=sel, out=bNandsel6);
+    // output
+    Nand(a=aNandNotsel6, b=bNandsel6, out=out[6]);
+
+    // aNandNotsel
+    Nand(a=a[7], b=notsel, out=aNandNotsel7);
+    // bNandsel
+    Nand(a=b[7], b=sel, out=bNandsel7);
+    // output
+    Nand(a=aNandNotsel7, b=bNandsel7, out=out[7]);
+
+    // aNandNotsel
+    Nand(a=a[8], b=notsel, out=aNandNotsel8);
+    // bNandsel
+    Nand(a=b[8], b=sel, out=bNandsel8);
+    // output
+    Nand(a=aNandNotsel8, b=bNandsel8, out=out[8]);
+
+    // aNandNotsel
+    Nand(a=a[9], b=notsel, out=aNandNotsel9);
+    // bNandsel
+    Nand(a=b[9], b=sel, out=bNandsel9);
+    // output
+    Nand(a=aNandNotsel9, b=bNandsel9, out=out[9]);
+
+    // aNandNotsel
+    Nand(a=a[10], b=notsel, out=aNandNotsel10);
+    // bNandsel
+    Nand(a=b[10], b=sel, out=bNandsel10);
+    // output
+    Nand(a=aNandNotsel10, b=bNandsel10, out=out[10]);
+
+    // aNandNotsel
+    Nand(a=a[11], b=notsel, out=aNandNotsel11);
+    // bNandsel
+    Nand(a=b[11], b=sel, out=bNandsel11);
+    // output
+    Nand(a=aNandNotsel11, b=bNandsel11, out=out[11]);
+
+    // aNandNotsel
+    Nand(a=a[12], b=notsel, out=aNandNotsel12);
+    // bNandsel
+    Nand(a=b[12], b=sel, out=bNandsel12);
+    // output
+    Nand(a=aNandNotsel12, b=bNandsel12, out=out[12]);
+
+    // aNandNotsel
+    Nand(a=a[13], b=notsel, out=aNandNotsel13);
+    // bNandsel
+    Nand(a=b[13], b=sel, out=bNandsel13);
+    // output
+    Nand(a=aNandNotsel13, b=bNandsel13, out=out[13]);
+
+    // aNandNotsel
+    Nand(a=a[14], b=notsel, out=aNandNotsel14);
+    // bNandsel
+    Nand(a=b[14], b=sel, out=bNandsel14);
+    // output
+    Nand(a=aNandNotsel14, b=bNandsel14, out=out[14]);
+
+    // aNandNotsel
+    Nand(a=a[15], b=notsel, out=aNandNotsel15);
+    // bNandsel
+    Nand(a=b[15], b=sel, out=bNandsel15);
+    // output
+    Nand(a=aNandNotsel15, b=bNandsel15, out=out[15]);
 }
