@@ -12,7 +12,6 @@ CHIP And16 {
     OUT out[16];
 
     PARTS:
-
     Nand(a=a[0] , b=b[0] , out=aAndb0 );
     Nand(a=aAndb0 , b=aAndb0 , out=out[0] );
     

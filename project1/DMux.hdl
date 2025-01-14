@@ -12,7 +12,6 @@ CHIP DMux {
     OUT a, b;
 
     PARTS:
-
     // notsel
     Nand(a=sel, b=sel , out=notsel );
     

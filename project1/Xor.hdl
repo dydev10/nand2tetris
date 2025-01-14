@@ -11,8 +11,6 @@ CHIP Xor {
     OUT out;
 
     PARTS:
-    //// Replace this comment with your code.
-    
     // nota
     Nand(a=a , b=a , out=nota );
 
