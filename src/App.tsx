@@ -2,6 +2,7 @@ import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import notLogo from './assets/notCircle.png'
 import './App.css'
+import SimCanvas from './components/SimCanvas'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -21,6 +22,9 @@ function App() {
         <button onClick={() => setCount((count) => count + 1)}>
           count is {count}
         </button>
+      </div>
+      <div id='canvas-wrapper'>
+        <SimCanvas />
       </div>
       <p className="read-the-docs">
         HTML5 Canvas + React
