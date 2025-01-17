@@ -3,6 +3,7 @@ import reactLogo from './assets/react.svg'
 import notLogo from './assets/notCircle.png'
 import './App.css'
 import SimCanvas from './components/SimCanvas'
+import ConnectedCanvas from './components/ConnectedCanvas'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -24,7 +25,8 @@ function App() {
         </button>
       </div>
       <div id='canvas-wrapper'>
-        <SimCanvas />
+        {/* <SimCanvas /> */}
+        <ConnectedCanvas />
       </div>
       <p className="read-the-docs">
         HTML5 Canvas + React
