@@ -19,22 +19,31 @@ export type TempConnection = { fromX: number; fromY: number; toX: number; toY: n
 const ConnectedCanvas: React.FC = () => {
   const [boxes, setBoxes] = React.useState<Box[]>([
     {
+      x: 350,
+      y: 200,
+      width: 80,
+      height: 60,
+      inputs: [0],
+      outputs: [0],
+      name: "NOT",
+    },
+    {
       x: 100,
       y: 100,
-      width: 100,
-      height: 75,
+      width: 80,
+      height: 60,
       inputs: [0, 1],
-      outputs: [1, 0],
-      name: "Box 1",
+      outputs: [1],
+      name: "NAND",
     },
     {
       x: 250,
       y: 150,
-      width: 120,
-      height: 80,
-      inputs: [1],
-      outputs: [0, 1, 1],
-      name: "Box 2",
+      width: 80,
+      height: 60,
+      inputs: [0,0],
+      outputs: [0],
+      name: "OR",
     },
   ]);
 

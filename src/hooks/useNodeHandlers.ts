@@ -1,6 +1,8 @@
 import React from "react";
 import { Box, Connection, TempConnection } from "../components/ConnectedCanvas";
 import { CONNECTION_THRESHOLD, NODE_INPUT_PADDING, NODE_OUTPUT_PADDING } from "../helpers/constants";
+import { resolveGateOutputs } from "../helpers/gates";
+import { LogicGates } from "../enums/gate";
 
 // Custom hook to handle node interaction logic
 function useNodeHandlers(
@@ -20,6 +22,15 @@ function useNodeHandlers(
   const [isDraggingBox, setIsDraggingBox] = React.useState(false);
   const [draggingBoxIndex, setDraggingBoxIndex] = React.useState<number | null>(null);
   const [dragOffset, setDragOffset] = React.useState<{ x: number; y: number } | null>(null);
+
+  const resolveUpdatedGates = () => {
+    setBoxes((prevBoxes) =>
+      prevBoxes.map((prevBox) =>({
+        ...prevBox,
+        outputs: resolveGateOutputs(prevBox.name as LogicGates, prevBox.inputs),
+      }))
+    );
+  };
 
   const handleNodeMouseDown = (
     e: React.MouseEvent,
@@ -123,6 +134,8 @@ function useNodeHandlers(
         setDragOffset({ x: mouseX - box.x, y: mouseY - box.y });
       }
     });
+
+    resolveUpdatedGates();
   };
 
   const handleMouseMove = (e: React.MouseEvent) => {
@@ -151,6 +164,8 @@ function useNodeHandlers(
         fromBox.y + (fromBox.height / (fromBox.outputs.length + 1)) * (connectionStart.node + 1);
       setTempConnection({ fromX, fromY, toX: mouseX, toY: mouseY });
     }
+
+    // resolveUpdatedGates();
   };
 
   const handleMouseUp = (
@@ -193,6 +208,8 @@ function useNodeHandlers(
       setDraggingBoxIndex(null);
       setDragOffset(null);
     }
+
+    resolveUpdatedGates();
   };
 
   return {
