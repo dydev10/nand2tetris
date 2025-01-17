@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Connection, TempConnection } from "../components/ConnectedCanvas";
-import { NODE_INPUT_PADDING, NODE_OUTPUT_PADDING } from "../helpers/constants";
+import { CONNECTION_THRESHOLD, NODE_INPUT_PADDING, NODE_OUTPUT_PADDING } from "../helpers/constants";
 
 // Custom hook to handle node interaction logic
 function useNodeHandlers(
@@ -40,7 +40,7 @@ function useNodeHandlers(
         const nodeX = box.x - NODE_INPUT_PADDING;
         const nodeY = box.y + inputSpacing * (inputIndex + 1);
         const distance = Math.sqrt((mouseX - nodeX) ** 2 + (mouseY - nodeY) ** 2);
-        if (distance <= 5) {
+        if (distance <= CONNECTION_THRESHOLD) {
           // Toggle the input node state
           setBoxes((prevBoxes) =>
             prevBoxes.map((b, i) =>
@@ -69,7 +69,7 @@ function useNodeHandlers(
         const nodeX = box.x + box.width + NODE_OUTPUT_PADDING;
         const nodeY = box.y + outputSpacing * (outputIndex + 1);
         const distance = Math.sqrt((mouseX - nodeX) ** 2 + (mouseY - nodeY) ** 2);
-        if (distance <= 5) {
+        if (distance <= CONNECTION_THRESHOLD) {
           setIsConnecting(true);
           setConnectionStart({ box: boxIndex, node: outputIndex });
           actionTaken = true;
@@ -98,7 +98,8 @@ function useNodeHandlers(
           Math.abs((toY - fromY) * mouseX - (toX - fromX) * mouseY + toX * fromY - toY * fromX) /
           Math.sqrt((toY - fromY) ** 2 + (toX - fromX) ** 2);
   
-        if (distance < 5) {
+        // TODO: Add another constant for line click threshold
+        if (distance < CONNECTION_THRESHOLD) {
           // Delete the connection
           setConnections((prev) => prev.filter((_, i) => i !== index));
           actionTaken = true;
@@ -170,7 +171,7 @@ function useNodeHandlers(
           const nodeX = box.x - NODE_INPUT_PADDING;
           const nodeY = box.y + inputSpacing * (inputIndex + 1);
           const distance = Math.sqrt((mouseX - nodeX) ** 2 + (mouseY - nodeY) ** 2);
-          if (distance <= 5) {
+          if (distance <= CONNECTION_THRESHOLD) {
             setConnections((prev) => [
               ...prev,
               {
