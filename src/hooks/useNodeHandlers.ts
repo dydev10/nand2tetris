@@ -196,6 +196,25 @@ function useNodeHandlers(
                 toNode: inputIndex,
               },
             ]);
+
+            // BROKEN: Updates the input state based on the source output state
+            const sourceBox = boxes[connectionStart.box];
+            const sourceOutputState = sourceBox.outputs[connectionStart.node]; // Get source output state
+            if (sourceOutputState === 1) {
+              // Set the input node state to active
+              setBoxes((prev) =>
+                prev.map((b, i) =>
+                  i === boxIndex
+                    ? {
+                        ...b,
+                        inputs: b.inputs.map((state, j) =>
+                          j === inputIndex ? 1 : state
+                        ),
+                      }
+                    : b
+                )
+              );
+            }
           }
         });
       });
