@@ -1,5 +1,6 @@
 import { Box, Connection } from "../components/ConnectedCanvas";
-import { NODE_INPUT_PADDING, NODE_OUTPUT_PADDING, NODE_RADIUS } from "./constants";
+import { TerminalNodes } from "../enums/gate";
+import { NODE_INPUT_PADDING, NODE_OUTPUT_PADDING, NODE_RADIUS, TERMINAL_NEXT_PADDING, TERMINAL_PAST_PADDING, TERMINAL_RADIUS } from "./constants";
 
 export type ConnectionLine = {
   fromX: number,
@@ -37,7 +38,7 @@ export const connectionLine = (fromBox: Box, toBox: Box, connection: Connection)
 };
 
 
-export const inputCircle = (inputIndex: number, inputState: number, box: Box) : ConnectionIOCircle => {
+export const inputCircle = (inputIndex: number, inputState: number, box: Box, radius: number = NODE_RADIUS) : ConnectionIOCircle => {
   const inputSpacing = box.height / (box.inputs.length + 1);
   const x = box.x - NODE_INPUT_PADDING;
   const y = box.y + inputSpacing * (inputIndex + 1);
@@ -47,11 +48,11 @@ export const inputCircle = (inputIndex: number, inputState: number, box: Box) : 
     x,
     y,
     color,
-    radius: NODE_RADIUS,
+    radius,
   };
 };
 
-export const outputCircle = (outputIndex: number, outputState: number, box: Box) : ConnectionIOCircle => {
+export const outputCircle = (outputIndex: number, outputState: number, box: Box, radius: number = NODE_RADIUS) : ConnectionIOCircle => {
   const outputSpacing = box.height / (box.outputs.length + 1);
   const x = box.x + box.width + NODE_OUTPUT_PADDING;
   const y = box.y + outputSpacing * (outputIndex + 1);
@@ -61,6 +62,35 @@ export const outputCircle = (outputIndex: number, outputState: number, box: Box)
     x,
     y,
     color,
-    radius: NODE_RADIUS,
+    radius,
+  };
+};
+
+// outgoing circles are of type output(reversed type) to support connection with canvas gate nodes
+export const terminalCircle = (
+  type: TerminalNodes,
+  socketIndex: number,
+  socketState: number,
+  box: Box,
+) : ConnectionIOCircle => {
+  let x = 0, y = 0, color = 'black';
+
+  if (type === TerminalNodes.PAST) {
+    const outputSpacing = box.height / (box.outputs.length + 1);
+    x = box.x + box.width + TERMINAL_PAST_PADDING;
+    y = box.y + outputSpacing * (socketIndex + 1);
+    color = socketState === 1 ? "blue" : "gray"; // Active: blue, Inactive: gray
+  } else {
+    const inputSpacing = box.height / (box.inputs.length + 1);
+    x = box.x - TERMINAL_NEXT_PADDING;
+    y = box.y + inputSpacing * (socketIndex + 1);
+    color = socketState === 1 ? "green" : "gray";  // Active: green, Inactive: gray
+  }
+
+  return {
+    x,
+    y,
+    color,
+    radius: TERMINAL_RADIUS,
   };
 };

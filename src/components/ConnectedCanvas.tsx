@@ -1,6 +1,7 @@
 import React from "react";
 import useNodeHandlers from "../hooks/useNodeHandlers";
 import useCanvasRendering from "../hooks/useCanvasRendering";
+import useNodeStore from "../stores/useNodeStore";
 
 export type Box = {
   x: number;
@@ -17,6 +18,7 @@ export type Connection = { fromBox: number; fromNode: number; toBox: number; toN
 export type TempConnection = { fromX: number; fromY: number; toX: number; toY: number } | null;
 
 const ConnectedCanvas: React.FC = () => {
+  const loadNodes = useNodeStore(state => state.setupNodes);
   const [tempConnection, setTempConnection] = React.useState<TempConnection>(null);
   const canvasRef = React.useRef<HTMLCanvasElement | null>(null);
 
@@ -30,8 +32,11 @@ const ConnectedCanvas: React.FC = () => {
     const canvas = canvasRef.current;
     if (canvas) {
       setCtx(canvas.getContext("2d"));
+
+      const { width, height } = canvas.getBoundingClientRect();
+      loadNodes(width, height);
     }
-  }, []);
+  }, [loadNodes]);
 
   useCanvasRendering(ctx, tempConnection);
   

@@ -4,3 +4,8 @@ export enum LogicGates {
   AND = 'AND',
   NAND = 'NAND',
 }
+
+export enum TerminalNodes {
+  PAST = 'PAST',
+  NEXT = 'NEXT',
+}

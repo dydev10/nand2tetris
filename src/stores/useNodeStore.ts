@@ -1,11 +1,44 @@
 import { create } from "zustand";
 import { Box, Connection } from "../components/ConnectedCanvas";
-import { LogicGates } from "../enums/gate";
+import { LogicGates, TerminalNodes } from "../enums/gate";
 import { resolveGateOutputs } from "../helpers/gates";
 
+const sampleNOR = {
+  boxes: [
+    {
+      x: 100,
+      y: 150,
+      width: 80,
+      height: 60,
+      inputs: [0,0],
+      outputs: [0],
+      name: "OR",
+    },
+    {
+      x: 300,
+      y: 150,
+      width: 80,
+      height: 60,
+      inputs: [0],
+      outputs: [1],
+      name: "NOT",
+    },
+  ],
+  connections: [{
+    fromBox: 0,
+    fromNode: 0,
+    toBox : 1,
+    toNode: 0,
+  }]
+};
+
 type NodeStore = {
+  pastNode: Box,
+  nextNode: Box,
+  terminalConnections: Connection[],
   boxes: Box[],
   connections: Connection[],
+  setupNodes:(canvasWidth: number, canvasHeight: number) => void,
   toggleBoxInput: (boxIndex: number, inputIndex: number) => void,
   activateBoxInput: (boxIndex: number, inputIndex: number) => void,
   deActivateBoxInput: (boxIndex: number, inputIndex: number) => void,
@@ -19,41 +52,62 @@ const useNodeStore = create<NodeStore>((set, get) =>({
   /**
    * states
    */
+  pastNode: {
+    x: 0,
+    y: 0,
+    width: 0,
+    height: 300,
+    inputs: [0], // inputs to be ignored
+    outputs: [1],
+    name: TerminalNodes.PAST,
+  },
+  nextNode: {
+    x: 250, // canvas width, set it dynamically
+    y: 0,
+    width: 0,
+    height: 300,
+    inputs: [0],
+    outputs: [1], // outputs to be ignored
+    name: TerminalNodes.NEXT,
+  },
+  terminalConnections: [],
+  
 
-  boxes: [
-    {
-      x: 350,
-      y: 200,
-      width: 80,
-      height: 60,
-      inputs: [0],
-      outputs: [1],
-      name: "NOT",
-    },
-    {
-      x: 100,
-      y: 100,
-      width: 80,
-      height: 60,
-      inputs: [0, 1],
-      outputs: [1],
-      name: "NAND",
-    },
-    {
-      x: 250,
-      y: 150,
-      width: 80,
-      height: 60,
-      inputs: [0,0],
-      outputs: [0],
-      name: "OR",
-    },
-  ],
+  boxes: [],
   connections: [],
 
   /**
    * reducers
   */
+
+  // init
+  setupNodes:(canvasWidth: number, canvasHeight: number) => {
+    const pastNode = get().pastNode;
+    const nextNode = get().nextNode;
+    console.log('old pastNode', pastNode, { canvasWidth, canvasHeight });
+    
+    // first set terminal node heights
+    set({
+      pastNode: {
+        ...pastNode,
+        height: canvasHeight,
+      },
+      nextNode: {
+        ...nextNode,
+        height: canvasHeight,
+        x: canvasWidth,
+      },
+    });
+
+    console.log('NEW pastNode', pastNode);
+
+
+    // finally push terminal nodes and saved boxes + connections
+    set({
+      boxes: [...structuredClone(sampleNOR.boxes)],
+      connections: [...structuredClone(sampleNOR.connections)],
+    })
+  },
 
   toggleBoxInput: (boxIndex, inputIndex) => {
     const prevBoxes = get().boxes;
