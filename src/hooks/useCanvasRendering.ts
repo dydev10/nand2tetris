@@ -3,7 +3,7 @@ import { TempConnection } from "../components/ConnectedCanvas";
 import { CONNECTION_THICKNESS, CONNECTION_TEMP_THICKNESS, NODE_BORDER_THICKNESS, NODE_RADIUS, NODE_INPUT_PADDING, NODE_OUTPUT_PADDING } from "../helpers/constants";
 import { drawBox, drawCircle, drawLine } from "../helpers/canvas";
 import useNodeStore from "../stores/useNodeStore";
-import { connectionLine } from "../helpers/node";
+import { connectionLine, inputCircle, outputCircle } from "../helpers/node";
 
 function useCanvasRendering(
   ctx: CanvasRenderingContext2D | null,
@@ -37,21 +37,15 @@ function useCanvasRendering(
       );
   
       // Draw input nodes
-      const inputSpacing = box.height / (box.inputs.length + 1);
       box.inputs.forEach((state, index) => {
-        const nodeX = box.x - NODE_INPUT_PADDING;
-        const nodeY = box.y + inputSpacing * (index + 1);
-        const nodeColor = state === 1 ? "green" : "gray";  // Active: green, Inactive: gray
-        drawCircle(ctx, nodeX, nodeY, NODE_RADIUS, nodeColor);
+        const circle = inputCircle(index, state, box);
+        drawCircle(ctx, circle.x, circle.y, circle.radius, circle.color);
       });
   
       // Draw output nodes
-      const outputSpacing = box.height / (box.outputs.length + 1);
       box.outputs.forEach((state, index) => {
-        const nodeX = box.x + box.width + NODE_OUTPUT_PADDING;
-        const nodeY = box.y + outputSpacing * (index + 1);
-        const nodeColor = state === 1 ? "blue" : "gray"; // Active: blue, Inactive: gray
-        drawCircle(ctx, nodeX, nodeY, NODE_RADIUS, nodeColor);
+        const circle = outputCircle(index, state, box);
+        drawCircle(ctx, circle.x, circle.y, circle.radius, circle.color);
       });
     });
   
