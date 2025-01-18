@@ -1,7 +1,9 @@
 import React from "react";
 import { TempConnection } from "../components/ConnectedCanvas";
-import { CONNECTION_THRESHOLD, NODE_INPUT_PADDING, NODE_OUTPUT_PADDING } from "../helpers/constants";
+import { CONNECTION_LINE_THRESHOLD, CONNECTION_THRESHOLD, NODE_INPUT_PADDING, NODE_OUTPUT_PADDING } from "../helpers/constants";
 import useNodeStore from "../stores/useNodeStore";
+import { connectionLine } from "../helpers/node";
+import { distanceToLine, distanceToPoint } from "../helpers/maths";
 
 // Custom hook to handle node interaction logic
 function useNodeHandlers(
@@ -45,7 +47,7 @@ function useNodeHandlers(
       box.inputs.forEach((_, inputIndex) => {
         const nodeX = box.x - NODE_INPUT_PADDING;
         const nodeY = box.y + inputSpacing * (inputIndex + 1);
-        const distance = Math.sqrt((mouseX - nodeX) ** 2 + (mouseY - nodeY) ** 2);
+        const distance = distanceToPoint(mouseX, mouseY, nodeX, nodeY);
         if (distance <= CONNECTION_THRESHOLD) {
           toggleStoreBoxInput(boxIndex, inputIndex);
           actionTaken = true;
@@ -62,7 +64,7 @@ function useNodeHandlers(
       box.outputs.forEach((_, outputIndex) => {
         const nodeX = box.x + box.width + NODE_OUTPUT_PADDING;
         const nodeY = box.y + outputSpacing * (outputIndex + 1);
-        const distance = Math.sqrt((mouseX - nodeX) ** 2 + (mouseY - nodeY) ** 2);
+        const distance = distanceToPoint(mouseX, mouseY, nodeX, nodeY);
         if (distance <= CONNECTION_THRESHOLD) {
           setIsConnecting(true);
           setConnectionStart({ box: boxIndex, node: outputIndex });
@@ -80,20 +82,17 @@ function useNodeHandlers(
       const toBox = storeBoxes[connection.toBox];
   
       if (fromBox && toBox) {
-        const fromX = fromBox.x + fromBox.width + NODE_OUTPUT_PADDING; // Right side output
-        const fromY =
-          fromBox.y + (fromBox.height / (fromBox.outputs.length + 1)) * (connection.fromNode + 1);
-        const toX = toBox.x - NODE_INPUT_PADDING; // Left side input
-        const toY =
-          toBox.y + (toBox.height / (toBox.inputs.length + 1)) * (connection.toNode + 1);
-  
-        // Check if the click is near this connection line
-        const distance =
-          Math.abs((toY - fromY) * mouseX - (toX - fromX) * mouseY + toX * fromY - toY * fromX) /
-          Math.sqrt((toY - fromY) ** 2 + (toX - fromX) ** 2);
-  
-        // TODO: Add another constant for line click threshold instead of using connection's
-        if (distance < CONNECTION_THRESHOLD) {
+        const line = connectionLine(fromBox, toBox, connection);
+        const distance = distanceToLine(
+          mouseX,
+          mouseY,
+          line.fromX,
+          line.fromY,
+          line.toX,
+          line.toY,
+        );
+
+        if (distance < CONNECTION_LINE_THRESHOLD) {
           // Delete the connection
           deleteStoreConnection(index);
           actionTaken = true;
@@ -165,7 +164,7 @@ function useNodeHandlers(
         box.inputs.forEach((_, inputIndex) => {
           const nodeX = box.x - NODE_INPUT_PADDING;
           const nodeY = box.y + inputSpacing * (inputIndex + 1);
-          const distance = Math.sqrt((mouseX - nodeX) ** 2 + (mouseY - nodeY) ** 2);
+          const distance = distanceToPoint(mouseX, mouseY, nodeX, nodeY);
           if (distance <= CONNECTION_THRESHOLD) {
             addStoreConnection(connectionStart, boxIndex, inputIndex);
 
