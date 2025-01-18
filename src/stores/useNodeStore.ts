@@ -13,6 +13,7 @@ const sampleNOR = {
       inputs: [0,0],
       outputs: [0],
       name: "OR",
+      label: "OR",
     },
     {
       x: 300,
@@ -22,12 +23,13 @@ const sampleNOR = {
       inputs: [0],
       outputs: [1],
       name: "NOT",
+      label: "NOT",
     },
   ],
   connections: [{
-    fromBox: 0,
+    fromBox: 2,
     fromNode: 0,
-    toBox : 1,
+    toBox : 3,
     toNode: 0,
   }]
 };
@@ -58,7 +60,7 @@ const useNodeStore = create<NodeStore>((set, get) =>({
     width: 0,
     height: 300,
     inputs: [0], // inputs to be ignored
-    outputs: [1],
+    outputs: [1, 0],
     name: TerminalNodes.PAST,
   },
   nextNode: {
@@ -66,7 +68,7 @@ const useNodeStore = create<NodeStore>((set, get) =>({
     y: 0,
     width: 0,
     height: 300,
-    inputs: [0],
+    inputs: [0, 1],
     outputs: [1], // outputs to be ignored
     name: TerminalNodes.NEXT,
   },
@@ -84,7 +86,6 @@ const useNodeStore = create<NodeStore>((set, get) =>({
   setupNodes:(canvasWidth: number, canvasHeight: number) => {
     const pastNode = get().pastNode;
     const nextNode = get().nextNode;
-    console.log('old pastNode', pastNode, { canvasWidth, canvasHeight });
     
     // first set terminal node heights
     set({
@@ -99,13 +100,10 @@ const useNodeStore = create<NodeStore>((set, get) =>({
       },
     });
 
-    console.log('NEW pastNode', pastNode);
-
-
     // finally push terminal nodes and saved boxes + connections
     set({
-      boxes: [...structuredClone(sampleNOR.boxes)],
-      connections: [...structuredClone(sampleNOR.connections)],
+      boxes: [get().pastNode, get().nextNode, ...structuredClone(sampleNOR.boxes)],
+      connections: [...get().terminalConnections, ...structuredClone(sampleNOR.connections)],
     })
   },
 
