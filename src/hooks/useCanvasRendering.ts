@@ -1,15 +1,15 @@
 import React from "react";
-import { Box, Connection, TempConnection } from "../components/ConnectedCanvas";
+import { TempConnection } from "../components/ConnectedCanvas";
 import { CONNECTION_THICKNESS, CONNECTION_TEMP_THICKNESS, NODE_BORDER_THICKNESS, NODE_RADIUS, NODE_INPUT_PADDING, NODE_OUTPUT_PADDING } from "../helpers/constants";
 import { drawBox, drawCircle, drawLine } from "../helpers/canvas";
 import useNodeStore from "../stores/useNodeStore";
 
 function useCanvasRendering(
   ctx: CanvasRenderingContext2D | null,
-  boxes: Box[],
   tempConnection: TempConnection,
 ) {
   const storeConnections = useNodeStore(state => state.connections);
+  const storeBoxes = useNodeStore(state => state.boxes);
 
   const redraw = React.useCallback(() => {
     if (!ctx) return;
@@ -22,7 +22,7 @@ function useCanvasRendering(
     ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
   
     // Draw each box
-    boxes.forEach((box) => {
+    storeBoxes.forEach((box) => {
       // Draw box
       drawBox(
         ctx,
@@ -56,8 +56,8 @@ function useCanvasRendering(
   
     // Draw connections
     storeConnections.forEach((connection) => {
-      const fromBox = boxes[connection.fromBox];
-      const toBox = boxes[connection.toBox];
+      const fromBox = storeBoxes[connection.fromBox];
+      const toBox = storeBoxes[connection.toBox];
   
       if (fromBox && toBox) {
         const fromX = fromBox.x + fromBox.width + NODE_OUTPUT_PADDING; // Right side output
@@ -95,7 +95,7 @@ function useCanvasRendering(
         CONNECTION_TEMP_THICKNESS
       );
     }
-  }, [ctx, boxes, storeConnections, tempConnection]);
+  }, [ctx, storeBoxes, storeConnections, tempConnection]);
 
   React.useEffect(() => {
     redraw();

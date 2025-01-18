@@ -17,42 +17,10 @@ export type Connection = { fromBox: number; fromNode: number; toBox: number; toN
 export type TempConnection = { fromX: number; fromY: number; toX: number; toY: number } | null;
 
 const ConnectedCanvas: React.FC = () => {
-  const [boxes, setBoxes] = React.useState<Box[]>([
-    {
-      x: 350,
-      y: 200,
-      width: 80,
-      height: 60,
-      inputs: [0],
-      outputs: [0],
-      name: "NOT",
-    },
-    {
-      x: 100,
-      y: 100,
-      width: 80,
-      height: 60,
-      inputs: [0, 1],
-      outputs: [1],
-      name: "NAND",
-    },
-    {
-      x: 250,
-      y: 150,
-      width: 80,
-      height: 60,
-      inputs: [0,0],
-      outputs: [0],
-      name: "OR",
-    },
-  ]);
-
   const [tempConnection, setTempConnection] = React.useState<TempConnection>(null);
   const canvasRef = React.useRef<HTMLCanvasElement | null>(null);
 
   const { handleNodeMouseDown, handleMouseMove, handleMouseUp } = useNodeHandlers(
-    boxes,
-    setBoxes,
     setTempConnection,
     canvasRef
   );
@@ -65,7 +33,7 @@ const ConnectedCanvas: React.FC = () => {
     }
   }, []);
 
-  const redraw = useCanvasRendering(ctx, boxes, tempConnection);
+  useCanvasRendering(ctx, tempConnection);
   
   return (
     <div>
