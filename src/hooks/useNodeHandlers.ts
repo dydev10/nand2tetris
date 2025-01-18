@@ -117,7 +117,7 @@ function useNodeHandlers(
       }
     });
 
-    resolveStoreUpdatedGates();
+    // resolveStoreUpdatedGates();
   };
 
   const handleMouseMove = (e: React.MouseEvent) => {
