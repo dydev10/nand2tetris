@@ -3,6 +3,7 @@ import { TempConnection } from "../components/ConnectedCanvas";
 import { CONNECTION_THICKNESS, CONNECTION_TEMP_THICKNESS, NODE_BORDER_THICKNESS, NODE_RADIUS, NODE_INPUT_PADDING, NODE_OUTPUT_PADDING } from "../helpers/constants";
 import { drawBox, drawCircle, drawLine } from "../helpers/canvas";
 import useNodeStore from "../stores/useNodeStore";
+import { connectionLine } from "../helpers/node";
 
 function useCanvasRendering(
   ctx: CanvasRenderingContext2D | null,
@@ -58,26 +59,16 @@ function useCanvasRendering(
     storeConnections.forEach((connection) => {
       const fromBox = storeBoxes[connection.fromBox];
       const toBox = storeBoxes[connection.toBox];
-  
       if (fromBox && toBox) {
-        const fromX = fromBox.x + fromBox.width + NODE_OUTPUT_PADDING; // Right side output
-        const fromY =
-          fromBox.y + (fromBox.height / (fromBox.outputs.length + 1)) * (connection.fromNode + 1);
-        const toX = toBox.x - NODE_INPUT_PADDING; // Left side input
-        const toY =
-          toBox.y + (toBox.height / (toBox.inputs.length + 1)) * (connection.toNode + 1);
-  
-        // Determine connection color based only on the starting output node state
-        const connectionColor = fromBox.outputs[connection.fromNode] === 1 ? "blue" : "gray";
-
         // Draw colored connection line on canvas
+        const line = connectionLine(fromBox, toBox, connection);
         drawLine(
           ctx,
-          fromX,
-          fromY,
-          toX,
-          toY,
-          connectionColor,
+          line.fromX,
+          line.fromY,
+          line.toX,
+          line.toY,
+          line.color,
           CONNECTION_THICKNESS
         );
       }
