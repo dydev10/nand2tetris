@@ -11,6 +11,7 @@ export type Box = {
   inputs: number[]; // Array of 0s and 1s
   outputs: number[]; // Array of 0s and 1s
   name: string;
+  label?: string;
 };
 
 export type Connection = { fromBox: number; fromNode: number; toBox: number; toNode: number };

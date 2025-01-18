@@ -73,7 +73,7 @@ function useCanvasRendering(
         box.width,
         box.height,
         'red',
-        box.name,
+        box.label,
         NODE_BORDER_THICKNESS
       );
   
