@@ -3,16 +3,21 @@ import { Box, Connection, TempConnection } from "../components/ConnectedCanvas";
 import { CONNECTION_THRESHOLD, NODE_INPUT_PADDING, NODE_OUTPUT_PADDING } from "../helpers/constants";
 import { resolveGateOutputs } from "../helpers/gates";
 import { LogicGates } from "../enums/gate";
+import useNodeStore from "../stores/useNodeStore";
 
 // Custom hook to handle node interaction logic
 function useNodeHandlers(
   boxes: Box[],
   setBoxes: React.Dispatch<React.SetStateAction<Box[]>>,
-  connections: Connection[],
-  setConnections: React.Dispatch<React.SetStateAction<Connection[]>>,
   setTempConnection: React.Dispatch<React.SetStateAction<TempConnection>>,
   canvasRef: React.RefObject<HTMLCanvasElement>
 ) {
+  // const storeBoxes = useNodeStore(state => state.boxes);
+  // const setStoreBoxes = useNodeStore(state => state.setBoxes);
+  const storeConnections = useNodeStore(state => state.connections);
+  const deleteStoreConnection = useNodeStore(state => state.deleteConnection);
+  const addStoreConnection = useNodeStore(state => state.addConnection);
+
   const [isConnecting, setIsConnecting] = React.useState(false);
   const [connectionStart, setConnectionStart] = React.useState<{
     box: number;
@@ -92,7 +97,7 @@ function useNodeHandlers(
     if (actionTaken) return;
   
     // Check if the click is near a connection line (for deletion)
-    connections.forEach((connection, index) => {
+    storeConnections.forEach((connection, index) => {
       const fromBox = boxes[connection.fromBox];
       const toBox = boxes[connection.toBox];
   
@@ -112,7 +117,7 @@ function useNodeHandlers(
         // TODO: Add another constant for line click threshold
         if (distance < CONNECTION_THRESHOLD) {
           // Delete the connection
-          setConnections((prev) => prev.filter((_, i) => i !== index));
+          deleteStoreConnection(index);
           actionTaken = true;
         }
       }
@@ -187,15 +192,7 @@ function useNodeHandlers(
           const nodeY = box.y + inputSpacing * (inputIndex + 1);
           const distance = Math.sqrt((mouseX - nodeX) ** 2 + (mouseY - nodeY) ** 2);
           if (distance <= CONNECTION_THRESHOLD) {
-            setConnections((prev) => [
-              ...prev,
-              {
-                fromBox: connectionStart.box,
-                fromNode: connectionStart.node,
-                toBox: boxIndex,
-                toNode: inputIndex,
-              },
-            ]);
+            addStoreConnection(connectionStart, boxIndex, inputIndex);
 
             // BROKEN: Updates the input state based on the source output state
             const sourceBox = boxes[connectionStart.box];

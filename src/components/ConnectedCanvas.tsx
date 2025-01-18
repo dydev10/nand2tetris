@@ -47,15 +47,12 @@ const ConnectedCanvas: React.FC = () => {
     },
   ]);
 
-  const [connections, setConnections] = React.useState<Connection[]>([]);
   const [tempConnection, setTempConnection] = React.useState<TempConnection>(null);
   const canvasRef = React.useRef<HTMLCanvasElement | null>(null);
 
   const { handleNodeMouseDown, handleMouseMove, handleMouseUp } = useNodeHandlers(
     boxes,
     setBoxes,
-    connections,
-    setConnections,
     setTempConnection,
     canvasRef
   );
@@ -68,7 +65,7 @@ const ConnectedCanvas: React.FC = () => {
     }
   }, []);
 
-  const redraw = useCanvasRendering(ctx, boxes, connections, tempConnection);
+  const redraw = useCanvasRendering(ctx, boxes, tempConnection);
   
   return (
     <div>
