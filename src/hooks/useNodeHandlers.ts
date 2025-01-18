@@ -168,12 +168,12 @@ function useNodeHandlers(
           if (distance <= CONNECTION_THRESHOLD) {
             addStoreConnection(connectionStart, boxIndex, inputIndex);
 
-            // BROKEN: should update the input state based on the source output state
-            const sourceBox = storeBoxes[connectionStart.box];
-            const sourceOutputState = sourceBox.outputs[connectionStart.node]; // Get source output state
-            if (sourceOutputState === 1) {
-              activateStoreBoxInput(boxIndex, inputIndex);
-            }
+            // // BROKEN: should update the input state based on the source output state
+            // const sourceBox = storeBoxes[connectionStart.box];
+            // const sourceOutputState = sourceBox.outputs[connectionStart.node]; // Get source output state
+            // if (sourceOutputState === 1) {
+            //   activateStoreBoxInput(boxIndex, inputIndex);
+            // }
           }
         });
       });
