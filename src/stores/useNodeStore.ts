@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { Box, Connection } from "../components/ConnectedCanvas";
-import { LogicGates, TerminalNodes } from "../enums/gate";
-import { resolveGateOutputs } from "../helpers/gates";
+import { TerminalNodes } from "../enums/gate";
+import { resolveTerminals } from "../helpers/gates";
 
 const sampleNOR = {
   boxes: [
@@ -59,8 +59,8 @@ const useNodeStore = create<NodeStore>((set, get) =>({
     y: 0,
     width: 0,
     height: 300,
-    inputs: [0], // inputs to be ignored
-    outputs: [1, 0],
+    inputs: [0, 1], // inputs NOT to be ignored
+    outputs: [0, 1],
     name: TerminalNodes.PAST,
   },
   nextNode: {
@@ -69,7 +69,7 @@ const useNodeStore = create<NodeStore>((set, get) =>({
     width: 0,
     height: 300,
     inputs: [0, 1],
-    outputs: [1], // outputs to be ignored
+    outputs: [0, 1], // outputs NOT to be ignored
     name: TerminalNodes.NEXT,
   },
   terminalConnections: [],
@@ -189,11 +189,12 @@ const useNodeStore = create<NodeStore>((set, get) =>({
 
   // called after all state updates [TODO: convert to listener if infinite render is fixed (no setState inside)]
   resolveUpdatedGates: () => {
+    const boxes = get().boxes;
+    const connections = get().connections;
+    const newBoxes = resolveTerminals(boxes, connections);    
+
     set({
-      boxes: get().boxes.map((prevBox) =>({
-        ...prevBox,
-        outputs: resolveGateOutputs(prevBox.name as LogicGates, prevBox.inputs),
-      })),
+      boxes: newBoxes,
     });
   },
 }));

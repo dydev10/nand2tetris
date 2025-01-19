@@ -7,6 +7,18 @@ export type TruthTable = {
 };
 
 export const TRUTH_TABLE: TruthTable = {
+  PAST: {
+    '00': '00',
+    '01': '01',
+    '10': '10',
+    '11': '11',
+  },
+  NEXT: {
+    '00': '00',
+    '01': '01',
+    '10': '10',
+    '11': '11',
+  },
   NOT: {
     '0': '1',
     '1': '0',

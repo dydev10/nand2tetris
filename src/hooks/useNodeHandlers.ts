@@ -12,7 +12,6 @@ function useNodeHandlers(
 ) {
   const storeBoxes = useNodeStore(state => state.boxes);
   const toggleStoreBoxInput = useNodeStore(state => state.toggleBoxInput);
-  const activateStoreBoxInput = useNodeStore(state => state.activateBoxInput);
   const dragStoreBox = useNodeStore(state => state.moveBox);
   const resolveStoreUpdatedGates = useNodeStore(state => state.resolveUpdatedGates);
   const storeConnections = useNodeStore(state => state.connections);
@@ -167,13 +166,6 @@ function useNodeHandlers(
           const distance = distanceToPoint(mouseX, mouseY, nodeX, nodeY);
           if (distance <= CONNECTION_THRESHOLD) {
             addStoreConnection(connectionStart, boxIndex, inputIndex);
-
-            // // BROKEN: should update the input state based on the source output state
-            // const sourceBox = storeBoxes[connectionStart.box];
-            // const sourceOutputState = sourceBox.outputs[connectionStart.node]; // Get source output state
-            // if (sourceOutputState === 1) {
-            //   activateStoreBoxInput(boxIndex, inputIndex);
-            // }
           }
         });
       });
