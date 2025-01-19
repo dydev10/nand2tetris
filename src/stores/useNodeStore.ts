@@ -3,6 +3,7 @@ import { Box, Connection } from "../components/ConnectedCanvas";
 import { TerminalNodes } from "../enums/gate";
 import { generateGate, generateTruth, resolveTerminals } from "../helpers/gates";
 import { GateTable } from "../helpers/constants";
+import { getExtendedTable, SavedGate } from "../helpers/save";
 
 const sampleNOR = {
   boxes: [
@@ -44,13 +45,6 @@ const sampleNOR = {
     toNode: 0,
   }]
 };
-
-export type SavedGate = {
-  name: string,
-  boxes: Box[],
-  connections: Connection[],
-  table: GateTable;
-}
 
 type NodeStore = {
   savedGates: SavedGate[],
@@ -235,14 +229,7 @@ const useNodeStore = create<NodeStore>((set, get) =>({
     const boxes = get().boxes;
     const connections = get().connections;
 
-    const extendedTable = get().savedGates.reduce((acc, saved) => {
-      acc = {
-        ...acc,
-        [saved.name]: saved.table,
-      };
-      return acc;
-    }, {});
-
+    const extendedTable = getExtendedTable(get().savedGates);
     const newBoxes = resolveTerminals(boxes, connections, extendedTable);    
 
     set({
@@ -254,13 +241,7 @@ const useNodeStore = create<NodeStore>((set, get) =>({
     const boxes = get().boxes;
     const connections = get().connections;
     
-    const extendedTable = get().savedGates.reduce((acc, saved) => {
-      acc = {
-        ...acc,
-        [saved.name]: saved.table,
-      };
-      return acc;
-    }, {});
+    const extendedTable = getExtendedTable(get().savedGates);
     const table = generateTruth(boxes, connections, extendedTable);
     
     const saving = {
