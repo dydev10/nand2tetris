@@ -20,6 +20,8 @@ export type TempConnection = { fromX: number; fromY: number; toX: number; toY: n
 
 const ConnectedCanvas: React.FC = () => {
   const loadNodes = useNodeStore(state => state.setupNodes);
+  const savedGates = useNodeStore(state => state.savedGates);
+  const saveGates = useNodeStore(state => state.saveGates);
   const [tempConnection, setTempConnection] = React.useState<TempConnection>(null);
   const canvasRef = React.useRef<HTMLCanvasElement | null>(null);
 
@@ -40,6 +42,19 @@ const ConnectedCanvas: React.FC = () => {
   }, [loadNodes]);
 
   useCanvasRendering(ctx, tempConnection);
+
+  const handleSave = () => {
+    saveGates();
+  }
+
+  const handleGateSelect = (g) => {
+    console.log(g);
+    const canvas = canvasRef.current;
+    if (canvas) {
+      const { width, height } = canvas.getBoundingClientRect();
+      loadNodes(width, height, g.name);
+    }
+  }
   
   return (
     <div>
@@ -54,6 +69,15 @@ const ConnectedCanvas: React.FC = () => {
         onMouseLeave={() => setTempConnection(null)} // Clear connection preview on mouse leave
       />
       {/* save, select UI here */}
+      <div>
+        <button onClick={handleSave}>Save</button>
+      </div>
+
+      <div>
+        {
+          savedGates.map((gate, i) => <button key={`${gate.name}-${i}`} onClick={() => handleGateSelect(gate)}>{gate.name}</button>)
+        }
+      </div>
     </div>
   );
 };

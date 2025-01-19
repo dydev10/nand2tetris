@@ -1,6 +1,7 @@
 import { Box, Connection } from "../components/ConnectedCanvas";
 import { LogicGates, TerminalNodes } from "../enums/gate";
-import { TRUTH_TABLE } from "./constants";
+import { GateTable, TRUTH_TABLE } from "./constants";
+import { generateBinaryPermutations } from "./maths";
 
 // export type ChipNames = (typeof LogicGates) & (typeof TerminalNodes);
 export type ChipNames = LogicGates | TerminalNodes;
@@ -9,7 +10,7 @@ export const resolveGateOutputs = (chip: ChipNames, inputs: number[]): number[] 
   const inputKey = inputs.join('');
   const outputs : string | undefined = TRUTH_TABLE[chip]?.[inputKey];
 
-  if (outputs === null || outputs === undefined) {    
+  if (outputs === null || outputs === undefined) {
     throw new Error('Invalid inputs received for truth table');
   }
 
@@ -61,4 +62,26 @@ export const resolveTerminals = (boxes: Box[], connections: Connection[]): Box[]
   })
 
   return finalBoxes;
+}
+
+
+export const generateTruth = (boxes: Box[], connections: Connection[]) : GateTable => {  
+  const testBoxes = [...boxes];
+  const inSockets = boxes[0].outputs;
+  const table: GateTable = {};
+
+  const simInputs = generateBinaryPermutations(inSockets.length);
+
+  simInputs.forEach((simOutputs) => {
+    let resolvedSim = [];
+    testBoxes[0] = {
+      ...testBoxes[0],
+      outputs: [...simOutputs],
+    };
+
+    resolvedSim = resolveTerminals(testBoxes, connections);
+    table[simOutputs.join('')] = resolvedSim[1].inputs.join('');
+  });
+
+  return table;
 }

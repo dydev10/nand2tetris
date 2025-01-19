@@ -1,7 +1,8 @@
 import { create } from "zustand";
 import { Box, Connection } from "../components/ConnectedCanvas";
 import { TerminalNodes } from "../enums/gate";
-import { resolveTerminals } from "../helpers/gates";
+import { generateTruth, resolveTerminals } from "../helpers/gates";
+import { GateTable } from "../helpers/constants";
 
 const sampleNOR = {
   boxes: [
@@ -34,13 +35,21 @@ const sampleNOR = {
   }]
 };
 
+type SavedGate = {
+  name: string,
+  boxes: Box[],
+  connections: Connection[],
+  table: GateTable;
+}
+
 type NodeStore = {
+  savedGates: SavedGate[],
   pastNode: Box,
   nextNode: Box,
   terminalConnections: Connection[],
   boxes: Box[],
   connections: Connection[],
-  setupNodes:(canvasWidth: number, canvasHeight: number) => void,
+  setupNodes:(canvasWidth: number, canvasHeight: number, name?: string) => void,
   toggleBoxInput: (boxIndex: number, inputIndex: number) => void,
   activateBoxInput: (boxIndex: number, inputIndex: number) => void,
   deActivateBoxInput: (boxIndex: number, inputIndex: number) => void,
@@ -48,6 +57,7 @@ type NodeStore = {
   deleteConnection: (connIndex: number) => void,
   addConnection: (connectionStart: { box: number, node: number }, boxIndex: number, inputIndex: number) => void,
   resolveUpdatedGates: () => void, // must be final state update on each user interaction
+  saveGates: () => void, // must be final state update on each user interaction
 }
 
 const useNodeStore = create<NodeStore>((set, get) =>({
@@ -78,12 +88,15 @@ const useNodeStore = create<NodeStore>((set, get) =>({
   boxes: [],
   connections: [],
 
+  savedGates: [],
+
   /**
    * reducers
   */
 
   // init
-  setupNodes:(canvasWidth: number, canvasHeight: number) => {
+  setupNodes:(canvasWidth: number, canvasHeight: number, name?: string) => {
+    
     const pastNode = get().pastNode;
     const nextNode = get().nextNode;
     
@@ -100,11 +113,25 @@ const useNodeStore = create<NodeStore>((set, get) =>({
       },
     });
 
-    // finally push terminal nodes and saved boxes + connections
-    set({
-      boxes: [get().pastNode, get().nextNode, ...structuredClone(sampleNOR.boxes)],
-      connections: [...get().terminalConnections, ...structuredClone(sampleNOR.connections)],
-    })
+    let saved;
+    if (name) {
+      saved = get().savedGates.find((gate) => gate.name === name);
+    }
+
+    if(!saved) {
+      // finally push terminal nodes and saved boxes + connections
+      set({
+        boxes: [get().pastNode, get().nextNode, ...structuredClone(sampleNOR.boxes)],
+        connections: [...get().terminalConnections, ...structuredClone(sampleNOR.connections)],
+      });
+    } else {
+      // finally push terminal nodes and saved boxes + connections
+      set({
+        boxes: [...structuredClone(saved.boxes)],
+        connections: [...structuredClone(saved.connections)],
+      });
+    }
+
   },
 
   toggleBoxInput: (boxIndex, inputIndex) => {
@@ -195,6 +222,26 @@ const useNodeStore = create<NodeStore>((set, get) =>({
 
     set({
       boxes: newBoxes,
+    });
+  },
+
+  saveGates: () => {
+    const boxes = get().boxes;
+    const connections = get().connections;
+
+    generateTruth(boxes, connections);
+    
+    const table = generateTruth(boxes, connections);
+    
+    const saving = {
+      name: 'test-0',
+      table,
+      boxes: get().boxes,
+      connections: get().connections,
+    };
+
+    set({
+      savedGates: [...get().savedGates, saving],
     });
   },
 }));
