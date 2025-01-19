@@ -234,7 +234,16 @@ const useNodeStore = create<NodeStore>((set, get) =>({
   resolveUpdatedGates: () => {
     const boxes = get().boxes;
     const connections = get().connections;
-    const newBoxes = resolveTerminals(boxes, connections);    
+
+    const extendedTable = get().savedGates.reduce((acc, saved) => {
+      acc = {
+        ...acc,
+        [saved.name]: saved.table,
+      };
+      return acc;
+    }, {});
+
+    const newBoxes = resolveTerminals(boxes, connections, extendedTable);    
 
     set({
       boxes: newBoxes,
@@ -244,10 +253,15 @@ const useNodeStore = create<NodeStore>((set, get) =>({
   saveGates: () => {
     const boxes = get().boxes;
     const connections = get().connections;
-
-    generateTruth(boxes, connections);
     
-    const table = generateTruth(boxes, connections);
+    const extendedTable = get().savedGates.reduce((acc, saved) => {
+      acc = {
+        ...acc,
+        [saved.name]: saved.table,
+      };
+      return acc;
+    }, {});
+    const table = generateTruth(boxes, connections, extendedTable);
     
     const saving = {
       name: 'test-0',

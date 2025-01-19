@@ -1,14 +1,14 @@
 import { Box, Connection } from "../components/ConnectedCanvas";
 import { LogicGates, TerminalNodes } from "../enums/gate";
-import { GateTable, TRUTH_TABLE } from "./constants";
+import { GateTable, TRUTH_TABLE, TruthTable } from "./constants";
 import { generateBinaryPermutations } from "./maths";
 
 // export type ChipNames = (typeof LogicGates) & (typeof TerminalNodes);
 export type ChipNames = LogicGates | TerminalNodes;
 
-export const resolveGateOutputs = (chip: ChipNames, inputs: number[]): number[] => {  
+export const resolveGateOutputs = (chip: ChipNames, inputs: number[], extendedTable: TruthTable = {}): number[] => {  
   const inputKey = inputs.join('');
-  const outputs : string | undefined = TRUTH_TABLE[chip]?.[inputKey];
+  const outputs : string | undefined = TRUTH_TABLE[chip]?.[inputKey] ?? extendedTable[chip]?.[inputKey];
 
   if (outputs === null || outputs === undefined) {
     throw new Error('Invalid inputs received for truth table');
@@ -17,14 +17,14 @@ export const resolveGateOutputs = (chip: ChipNames, inputs: number[]): number[] 
   return outputs.split('').map((output) => parseInt(output, 10));
 }
 
-export const resolveChain = (boxIndex: number, socketIndex: number, socketState: number, boxes: Box[], connections: Connection[], depth: number) => {
+export const resolveChain = (boxIndex: number, socketIndex: number, socketState: number, boxes: Box[], connections: Connection[], extendedTable: TruthTable) => {
   const outChains = connections.filter((conn) => conn.fromBox === boxIndex);
 
   // mutate current box gate with new input/outputs in boxes array
   // TODO: check for all past node connection to see active nodes are still connected
   const newInputs = [...boxes[boxIndex].inputs]
   newInputs[socketIndex] = socketState;
-  const newOutputs = resolveGateOutputs(boxes[boxIndex].name as ChipNames, newInputs);
+  const newOutputs = resolveGateOutputs(boxes[boxIndex].name as ChipNames, newInputs, extendedTable);
   boxes[boxIndex] = {
     ...boxes[boxIndex],
     inputs: newInputs,
@@ -46,26 +46,26 @@ export const resolveChain = (boxIndex: number, socketIndex: number, socketState:
       break;
     }  
     socketChain.forEach((chain) => {
-      resolveChain(chain.toBox, chain.toNode, newOutputs[outSocketIndex], boxes, connections, depth + 1)
+      resolveChain(chain.toBox, chain.toNode, newOutputs[outSocketIndex], boxes, connections, extendedTable)
     });
   }
 }
 
-export const resolveTerminals = (boxes: Box[], connections: Connection[]): Box[] => { 
+export const resolveTerminals = (boxes: Box[], connections: Connection[], extendedTable: TruthTable = {}): Box[] => { 
   // const pastSockets = boxes[0].inputs; // use this to support external in signals
   const pastSockets = boxes[0].outputs;
   const finalBoxes = [...boxes];
  
   // simulate inputs array value as set by code in state pastNode.outputs[] to start recursion
   pastSockets.forEach((state, index) => {
-    resolveChain(0, index, state, finalBoxes, connections, 0);
+    resolveChain(0, index, state, finalBoxes, connections, extendedTable);
   })
 
   return finalBoxes;
 }
 
 
-export const generateTruth = (boxes: Box[], connections: Connection[]) : GateTable => {  
+export const generateTruth = (boxes: Box[], connections: Connection[], extendedTable: TruthTable = {}) : GateTable => {  
   const testBoxes = [...boxes];
   const inSockets = boxes[0].outputs;
   const table: GateTable = {};
@@ -79,7 +79,7 @@ export const generateTruth = (boxes: Box[], connections: Connection[]) : GateTab
       outputs: [...simOutputs],
     };
 
-    resolvedSim = resolveTerminals(testBoxes, connections);
+    resolvedSim = resolveTerminals(testBoxes, connections, extendedTable);
     table[simOutputs.join('')] = resolvedSim[1].inputs.join('');
   });
 
