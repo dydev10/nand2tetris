@@ -85,3 +85,20 @@ export const generateTruth = (boxes: Box[], connections: Connection[]) : GateTab
 
   return table;
 }
+
+export const generateGate = (name: string, table: GateTable): Box => {
+  const inputs = Object.keys(table)[0].split('').map((k) => parseInt(k ,10));
+  const outputs = Object.values(table)[0].split('').map((k) => parseInt(k ,10));
+  const box: Box = {
+    name,
+    inputs,
+    outputs,
+    x: 0,
+    y: 0,
+    width: 100,
+    height: 100,
+    label: name,
+  };
+
+  return box;
+};

@@ -1,11 +1,21 @@
 import { create } from "zustand";
 import { Box, Connection } from "../components/ConnectedCanvas";
 import { TerminalNodes } from "../enums/gate";
-import { generateTruth, resolveTerminals } from "../helpers/gates";
+import { generateGate, generateTruth, resolveTerminals } from "../helpers/gates";
 import { GateTable } from "../helpers/constants";
 
 const sampleNOR = {
   boxes: [
+    // {
+    //   x: 100,
+    //   y: 150,
+    //   width: 80,
+    //   height: 60,
+    //   inputs: [0,0],
+    //   outputs: [0],
+    //   name: "OR",
+    //   label: "OR",
+    // },
     {
       x: 100,
       y: 150,
@@ -13,8 +23,8 @@ const sampleNOR = {
       height: 60,
       inputs: [0,0],
       outputs: [0],
-      name: "OR",
-      label: "OR",
+      name: "AND",
+      label: "AND",
     },
     {
       x: 300,
@@ -35,7 +45,7 @@ const sampleNOR = {
   }]
 };
 
-type SavedGate = {
+export type SavedGate = {
   name: string,
   boxes: Box[],
   connections: Connection[],
@@ -54,6 +64,7 @@ type NodeStore = {
   activateBoxInput: (boxIndex: number, inputIndex: number) => void,
   deActivateBoxInput: (boxIndex: number, inputIndex: number) => void,
   moveBox: (boxIndex: number, toX: number, toY: number) => void,
+  addBox: (name: string, table: GateTable) => void,
   deleteConnection: (connIndex: number) => void,
   addConnection: (connectionStart: { box: number, node: number }, boxIndex: number, inputIndex: number) => void,
   resolveUpdatedGates: () => void, // must be final state update on each user interaction
@@ -78,8 +89,8 @@ const useNodeStore = create<NodeStore>((set, get) =>({
     y: 0,
     width: 0,
     height: 300,
-    inputs: [0, 1],
-    outputs: [0, 1], // outputs NOT to be ignored
+    inputs: [0],
+    outputs: [0], // outputs NOT to be ignored
     name: TerminalNodes.NEXT,
   },
   terminalConnections: [],
@@ -191,6 +202,11 @@ const useNodeStore = create<NodeStore>((set, get) =>({
     )
     set({
       boxes,
+    });
+  },
+  addBox: (name, table) => {
+    set({
+      boxes: [...get().boxes, generateGate(name, table)]
     });
   },
   deleteConnection: (connIndex) => {

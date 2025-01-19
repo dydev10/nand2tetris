@@ -1,7 +1,7 @@
 import React from "react";
 import useNodeHandlers from "../hooks/useNodeHandlers";
 import useCanvasRendering from "../hooks/useCanvasRendering";
-import useNodeStore from "../stores/useNodeStore";
+import useNodeStore, { SavedGate } from "../stores/useNodeStore";
 
 export type Box = {
   x: number;
@@ -22,6 +22,7 @@ const ConnectedCanvas: React.FC = () => {
   const loadNodes = useNodeStore(state => state.setupNodes);
   const savedGates = useNodeStore(state => state.savedGates);
   const saveGates = useNodeStore(state => state.saveGates);
+  const addBox = useNodeStore(state => state.addBox);
   const [tempConnection, setTempConnection] = React.useState<TempConnection>(null);
   const canvasRef = React.useRef<HTMLCanvasElement | null>(null);
 
@@ -47,13 +48,9 @@ const ConnectedCanvas: React.FC = () => {
     saveGates();
   }
 
-  const handleGateSelect = (g) => {
-    console.log(g);
-    const canvas = canvasRef.current;
-    if (canvas) {
-      const { width, height } = canvas.getBoundingClientRect();
-      loadNodes(width, height, g.name);
-    }
+  const handleGateSelect = (saved: SavedGate) => {
+    console.log(saved);
+    addBox(saved.name, saved.table);
   }
   
   return (
