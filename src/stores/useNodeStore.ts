@@ -50,7 +50,6 @@ type NodeStore = {
   savedGates: SavedGate[],
   pastNode: Box,
   nextNode: Box,
-  terminalConnections: Connection[],
   boxes: Box[],
   connections: Connection[],
   setupNodes:(canvasWidth: number, canvasHeight: number, name?: string) => void,
@@ -87,7 +86,6 @@ const useNodeStore = create<NodeStore>((set, get) =>({
     outputs: [0], // outputs NOT to be ignored
     name: TerminalNodes.NEXT,
   },
-  terminalConnections: [],
   
 
   boxes: [],
@@ -127,7 +125,7 @@ const useNodeStore = create<NodeStore>((set, get) =>({
       // finally push terminal nodes and saved boxes + connections
       set({
         boxes: [get().pastNode, get().nextNode, ...structuredClone(sampleNOR.boxes)],
-        connections: [...get().terminalConnections, ...structuredClone(sampleNOR.connections)],
+        connections: [...structuredClone(sampleNOR.connections)],
       });
     } else {
       // finally push terminal nodes and saved boxes + connections
