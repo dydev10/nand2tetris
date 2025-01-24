@@ -26,23 +26,23 @@ function useCanvasRendering(
     ctx.fillStyle = "lightgray";
     ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
-    // draw terminal IO nodes and connections [flipped: read from outputs of past node, write to input of next node]
-    // Draw terminal past output nodes
-    if (pastNode) {
-      drawBox(ctx, pastNode.x, pastNode.y, pastNode.width, pastNode.height, 'green');
-      pastNode.outputs.forEach((state, index) => {
-        const circle = terminalCircle(TerminalNodes.PAST, index, state, pastNode);
-        drawCircle(ctx, circle.x, circle.y, circle.radius, circle.color);
-      });
-    }
-    // Draw next input nodes
-    if (nextNode) {
-      drawBox(ctx, nextNode.x, nextNode.y, nextNode.width, nextNode.height, 'blue');
-      nextNode.inputs.forEach((state, index) => {
-        const circle = terminalCircle(TerminalNodes.NEXT, index, state, nextNode);
-        drawCircle(ctx, circle.x, circle.y, circle.radius, circle.color);
-      });
-    }
+    // // draw terminal IO nodes and connections [flipped: read from outputs of past node, write to input of next node]
+    // // Draw terminal past output nodes
+    // if (pastNode) {
+    //   drawBox(ctx, pastNode.x, pastNode.y, pastNode.width, pastNode.height, 'green');
+    //   pastNode.outputs.forEach((state, index) => {
+    //     const circle = terminalCircle(TerminalNodes.PAST, index, state, pastNode);
+    //     drawCircle(ctx, circle.x, circle.y, circle.radius, circle.color);
+    //   });
+    // }
+    // // Draw next input nodes
+    // if (nextNode) {
+    //   drawBox(ctx, nextNode.x, nextNode.y, nextNode.width, nextNode.height, 'blue');
+    //   nextNode.inputs.forEach((state, index) => {
+    //     const circle = terminalCircle(TerminalNodes.NEXT, index, state, nextNode);
+    //     drawCircle(ctx, circle.x, circle.y, circle.radius, circle.color);
+    //   });
+    // }
 
     // // Draw connections
     // terminalConnections.forEach((connection) => {
