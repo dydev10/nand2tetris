@@ -3,7 +3,7 @@ import { TempConnection } from "../components/ConnectedCanvas";
 import { CONNECTION_LINE_THRESHOLD, CONNECTION_THRESHOLD, NODE_INPUT_PADDING, NODE_OUTPUT_PADDING } from "../helpers/constants";
 import useNodeStore from "../stores/useNodeStore";
 import { connectionLine } from "../helpers/node";
-import { distanceToLine, distanceToPoint } from "../helpers/maths";
+import { distanceToLine, distanceToPoint, isBetweenPoints } from "../helpers/maths";
 
 // Custom hook to handle node interaction logic
 function useNodeHandlers(
@@ -82,6 +82,15 @@ function useNodeHandlers(
   
       if (fromBox && toBox) {
         const line = connectionLine(fromBox, toBox, connection);
+        const isInLineSegment = isBetweenPoints(
+          mouseX,
+          mouseY,
+          line.fromX,
+          line.fromY,
+          line.toX,
+          line.toY,
+        );
+        
         const distance = distanceToLine(
           mouseX,
           mouseY,
@@ -91,7 +100,7 @@ function useNodeHandlers(
           line.toY,
         );
 
-        if (distance < CONNECTION_LINE_THRESHOLD) {
+        if (isInLineSegment && distance < CONNECTION_LINE_THRESHOLD) {
           // Delete the connection
           deleteStoreConnection(index);
           actionTaken = true;
