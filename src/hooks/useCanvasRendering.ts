@@ -42,26 +42,26 @@ function useCanvasRendering(
         const circle = terminalCircle(TerminalNodes.NEXT, index, state, nextNode);
         drawCircle(ctx, circle.x, circle.y, circle.radius, circle.color);
       });
-
     }
-    // Draw connections
-    terminalConnections.forEach((connection) => {
-      const fromBox = storeBoxes[connection.fromBox];
-      const toBox = storeBoxes[connection.toBox];
-      if (fromBox && toBox) {
-        // Draw colored connection line on canvas
-        const line = connectionLine(fromBox, toBox, connection);
-        drawLine(
-          ctx,
-          line.fromX,
-          line.fromY,
-          line.toX,
-          line.toY,
-          line.color,
-          CONNECTION_THICKNESS
-        );
-      }
-    });
+
+    // // Draw connections
+    // terminalConnections.forEach((connection) => {
+    //   const fromBox = storeBoxes[connection.fromBox];
+    //   const toBox = storeBoxes[connection.toBox];
+    //   if (fromBox && toBox) {
+    //     // Draw colored connection line on canvas
+    //     const line = connectionLine(fromBox, toBox, connection);
+    //     drawLine(
+    //       ctx,
+    //       line.fromX,
+    //       line.fromY,
+    //       line.toX,
+    //       line.toY,
+    //       line.color,
+    //       CONNECTION_THICKNESS
+    //     );
+    //   }
+    // });
 
     // Draw each box
     storeBoxes.forEach((box) => {
