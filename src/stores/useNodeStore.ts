@@ -62,7 +62,7 @@ type NodeStore = {
   deleteConnection: (connIndex: number) => void,
   addConnection: (connectionStart: { box: number, node: number }, boxIndex: number, inputIndex: number) => void,
   resolveUpdatedGates: () => void, // must be final state update on each user interaction
-  saveGates: () => void, // must be final state update on each user interaction
+  saveGates: (name: string) => void,
 }
 
 const useNodeStore = create<NodeStore>((set, get) =>({
@@ -237,7 +237,7 @@ const useNodeStore = create<NodeStore>((set, get) =>({
     });
   },
 
-  saveGates: () => {
+  saveGates: (name: string) => {
     const boxes = get().boxes;
     const connections = get().connections;
     
@@ -245,7 +245,7 @@ const useNodeStore = create<NodeStore>((set, get) =>({
     const table = generateTruth(boxes, connections, extendedTable);
     
     const saving = {
-      name: 'test-0',
+      name: name.length ? name : 'test-0',
       table,
       boxes: get().boxes,
       connections: get().connections,

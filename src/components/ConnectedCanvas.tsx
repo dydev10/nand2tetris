@@ -1,7 +1,8 @@
-import React from "react";
+import React, { ChangeEvent, useState } from "react";
 import useNodeHandlers from "../hooks/useNodeHandlers";
 import useCanvasRendering from "../hooks/useCanvasRendering";
-import useNodeStore, { SavedGate } from "../stores/useNodeStore";
+import useNodeStore from "../stores/useNodeStore";
+import { SavedGate } from "../helpers/save";
 
 export type Box = {
   x: number;
@@ -26,6 +27,10 @@ const ConnectedCanvas: React.FC = () => {
   const [tempConnection, setTempConnection] = React.useState<TempConnection>(null);
   const canvasRef = React.useRef<HTMLCanvasElement | null>(null);
 
+  // dom ui stuff
+  const [tempName, setTempName] = useState<string>('');
+
+
   const { handleNodeMouseDown, handleMouseMove, handleMouseUp } = useNodeHandlers(
     setTempConnection,
     canvasRef
@@ -45,16 +50,24 @@ const ConnectedCanvas: React.FC = () => {
   useCanvasRendering(ctx, tempConnection);
 
   const handleSave = () => {
-    saveGates();
+    saveGates(tempName);
   }
 
   const handleGateSelect = (saved: SavedGate) => {
     console.log(saved);
     addBox(saved.name, saved.table);
   }
+
+  const handleNameChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+    setTempName(value);
+  };
   
   return (
     <div>
+      <div>
+        <input className="name" type="text" value={tempName} onChange={handleNameChange} />
+      </div>
       <canvas
         ref={canvasRef}
         width={500}
