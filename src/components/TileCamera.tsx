@@ -1,6 +1,4 @@
-import React, { MutableRefObject, useCallback, useEffect, useRef, useState } from "react";
-import sampleImage from '../assets/tilemap1simple.png'
-import fullImage from '../assets/full_map.png'
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import layerImage from '../assets/tilemap1layer.png'
 import Map from "../engine/Map";
 import Camera2D from "../engine/Camera2D";
@@ -8,22 +6,8 @@ import Input from "../engine/Input";
 
 const GAME_WIDTH = 512;
 const GAME_HEIGHT = 512;
-const GAME_TILE = 32;
-const ROWS = GAME_HEIGHT / GAME_TILE;
-const COLUMNS = GAME_WIDTH / GAME_TILE;
-
-export type LevelTiles = number[];
-
-// tilemap id index starts from 1 to n
-// example level data
-const LEVEL_1: LevelTiles = [
-  2, 2, 2, 3, 9,
-  12, 12, 7, 8, 9,
-  9, 4, 7, 8, 9,
-  9, 5, 7, 8, 9,
-  9, 10, 7, 8, 9,
-];
-
+// const GAME_WIDTH = 768;
+// const GAME_HEIGHT = 768;
 
 function useTileMapRenderer(ctx: CanvasRenderingContext2D | null, showGrid: boolean) {
   const [map, setMap] = useState<Map|null>(null);
@@ -32,9 +16,6 @@ function useTileMapRenderer(ctx: CanvasRenderingContext2D | null, showGrid: bool
   
   const frameRef = useRef<number | null>(null);
   const prevTimeRef = useRef<number>(0);
-  const getTile = (level: LevelTiles, col: number, row: number): number => {
-    return level[row * COLUMNS + col]
-  }
 
   const updateCamera = useCallback((deltaTime: number) => {
     if (!ctx || !input || !camera) return;
@@ -56,39 +37,57 @@ function useTileMapRenderer(ctx: CanvasRenderingContext2D | null, showGrid: bool
     }
     camera.move(deltaTime, speedX, speedY);
   }, [ctx, input, camera]);
-  
-  const draw = useCallback(() => {   
+
+  const drawLayer = useCallback((layer: number) => {
     if (!ctx || !map || !camera) return;
 
-    // setup canvas config
-    ctx.imageSmoothingEnabled = false;
+    const startCol = Math.floor(camera.x / map.tileSize);
+    const endCol = startCol + (camera.width / map.tileSize);
+    const startRow = Math.floor(camera.y / map.tileSize);
+    const endRow = startRow + (camera.height / map.tileSize);
+    
+    const offsetX = -camera.x + startCol * map.tileSize;
+    const offsetY = -camera.y + startRow * map.tileSize;
 
-    ctx.drawImage(
-      map.image,
-      camera.x,
-      camera.y,
-      GAME_WIDTH,
-      GAME_HEIGHT,
-      0,
-      0,
-      GAME_WIDTH,
-      GAME_HEIGHT,
-    );
+    // grid
+    for (let row = startRow; row <= endRow; row++) {
+      for (let col = startCol; col <= endCol; col++) {
+        const tile = map.getTile(layer, col, row);
+        const x = (col - startCol) * map.tileSize + offsetX;
+        const y = (row - startRow) * map.tileSize + offsetY;
 
-    // rows
-    for (let row = 0; row < ROWS; row++) {
-      for (let col = 0; col < COLUMNS; col++) {
+        ctx.drawImage(
+          map.image,
+          ((tile - 1) * map.imageTile) % map.image.width,  // sx,
+          Math.floor((tile - 1) / map.imageCols) * map.imageTile,  // sy,
+          map.imageTile,  // sw,
+          map.imageTile,  // sh,
+          Math.round(x),
+          Math.round(y),
+          map.tileSize,
+          map.tileSize
+        );
+
         if (showGrid) {
           ctx.strokeRect(
-            col * GAME_TILE,
-            row * GAME_TILE,
-            GAME_TILE,
-            GAME_TILE,
+            Math.round(x),
+            Math.round(y),
+            map.tileSize,
+            map.tileSize,
           );
         }
       }
     }
   }, [ctx, map, camera, showGrid]);
+  
+  const draw = useCallback(() => {
+    if (!ctx) return;
+    // setup canvas config
+    ctx.imageSmoothingEnabled = false;
+
+    drawLayer(0);
+    drawLayer(1);
+  }, [ctx, drawLayer]);
 
   const frame = useCallback((time: DOMHighResTimeStamp) => {
     const deltaTime = (time - prevTimeRef.current) / 1000; 
@@ -116,6 +115,7 @@ function useTileMapRenderer(ctx: CanvasRenderingContext2D | null, showGrid: bool
   // start frame loop
   useEffect(() => {
     frameRef.current = requestAnimationFrame(frame);
+    
     return () => {
       if (frameRef.current) {
         cancelAnimationFrame(frameRef.current);
@@ -164,23 +164,25 @@ const TileCamera: React.FC = () => {
         style={{
           visibility: 'hidden',
         }}
-      />
-      <img
-        alt="Hidden tilemap source img"
-        src={sampleImage}
-        id="tilemap-source"
-        style={{
-          visibility: 'hidden',
-        }}
       /> */}
+
       <img
         alt="Hidden tilemap source img"
-        src={fullImage}
+        src={layerImage}
         id="tilemap-source"
         style={{
           // visibility: 'hidden',
         }}
       />
+
+      {/* <img
+        alt="Hidden tilemap source img"
+        src={fullImage}
+        id="tilemap-source"
+        style={{
+          visibility: 'hidden',
+        }}
+      /> */}
       <button onClick={() => { setShowGrid(!showGrid) }}>Grid</button>
     </div>
   );

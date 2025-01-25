@@ -16,11 +16,11 @@ export default class Camera2D {
     this.height = height;
     
     this.speed = 256; // pixels/sec
-    this.x = 128;
-    this.y = 128;
+    this.x = 0;
+    this.y = 0;
 
-    this.maxX = this.map.image.width - this.width;
-    this.maxY = this.map.image.height  - this.height;
+    this.maxX = this.map.cols * this.map.tileSize - this.width;
+    this.maxY = this.map.rows * this.map.tileSize  - this.height;
   }
 
   move = (deltaTime: number, speedX: number, speedY: number) => {
