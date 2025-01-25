@@ -2,7 +2,8 @@ import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import notLogo from './assets/notCircle.png'
 import './App.css'
-import ConnectedCanvas from './components/ConnectedCanvas'
+// import ConnectedCanvas from './components/ConnectedCanvas'
+import TileMap from './components/TileMap'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -24,7 +25,8 @@ function App() {
         </button>
       </div>
       <div id='canvas-wrapper'>
-        <ConnectedCanvas />
+        {/* <ConnectedCanvas /> */}
+        <TileMap />
       </div>
       <p className="read-the-docs">
         HTML5 Canvas + React
