@@ -3,7 +3,8 @@ import reactLogo from './assets/react.svg'
 import notLogo from './assets/notCircle.png'
 import './App.css'
 // import ConnectedCanvas from './components/ConnectedCanvas'
-import TileMap from './components/TileMap'
+// import TileMap from './components/TileMap'
+import TileCamera from './components/TileCamera'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -26,7 +27,8 @@ function App() {
       </div>
       <div id='canvas-wrapper'>
         {/* <ConnectedCanvas /> */}
-        <TileMap />
+        {/* <TileMap /> */}
+        <TileCamera />
       </div>
       <p className="read-the-docs">
         HTML5 Canvas + React
