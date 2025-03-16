@@ -65,7 +65,7 @@ const ConnectedCanvas: React.FC = () => {
   
   return (
     <div>
-      <div>
+      <div className="card">
         <input className="name" type="text" value={tempName} onChange={handleNameChange} />
       </div>
       <canvas
