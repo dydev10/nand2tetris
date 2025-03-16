@@ -8,7 +8,8 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "zippy": "node zippy.js"
+    "zippy": "node zippy.js",
+    "deploy": "vercel --prod"
   },
   "dependencies": {
     "react": "^18.3.1",

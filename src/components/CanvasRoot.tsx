@@ -158,7 +158,7 @@ const CanvasRoot: React.FC = () => {
     }
   }, []);
 
-  const redraw = useCanvasRendering(ctx, boxes, connections, tempConnection);
+  useCanvasRendering(ctx, boxes, connections, tempConnection);
 
   const handleMouseDown = (e: React.MouseEvent) => {
     const canvas = canvasRef.current;
