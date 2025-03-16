@@ -65,9 +65,6 @@ const ConnectedCanvas: React.FC = () => {
   
   return (
     <div>
-      <div className="card">
-        <input className="name" type="text" value={tempName} onChange={handleNameChange} />
-      </div>
       <canvas
         ref={canvasRef}
         width={500}
@@ -79,10 +76,12 @@ const ConnectedCanvas: React.FC = () => {
         onMouseLeave={() => setTempConnection(null)} // Clear connection preview on mouse leave
       />
       {/* save, select UI here */}
+      <div className="card">
+        <input className="name" type="text" value={tempName} onChange={handleNameChange} />
+      </div>
       <div>
         <button onClick={handleSave}>Save</button>
       </div>
-
       <div>
         {
           savedGates.map((gate, i) => <button key={`${gate.name}-${i}`} onClick={() => handleGateSelect(gate)}>{gate.name}</button>)
