@@ -33,4 +33,67 @@ CHIP CPU {
 
     PARTS:
 	//// Replace this comment with your code.
+    
+    // ins bits
+    // 0    j3
+    // 1    j2
+    // 2    j1
+    // 3    d3
+    // 4    d2
+    // 5    d1
+    // 6    c6
+    // 7    c5
+    // 8    c4
+    // 9    c3
+    // 10   c2
+    // 11   c1
+    // 12   a
+    // 13   ?
+    // 14   ?
+    // 15   op
+
+
+    // writeM
+    And(a= instruction[15], b= instruction[3], out= writeM);
+
+
+    Not(in= instruction[15], out= isA);
+    Or(a= isA, b= instruction[5], out= loadA);
+
+    // Feeback loop
+    Mux16(a= instruction, b= comp, sel= instruction[15], out= inMuxOut);
+
+    // Regs
+    // A
+    ARegister(in= inMuxOut, load= loadA, out= aReg, out[0..14]=addressM);
+
+    // D
+    And(a= instruction[15], b= instruction[4], out= drL);
+    DRegister(in= comp, load= drL, out= dReg);
+
+    // Comp
+    Mux16(a= aReg, b= inM, sel= instruction[12], out= inY);
+    ALU(x= dReg, y= inY, zx= instruction[11], nx= instruction[10], zy= instruction[9], ny= instruction[8], f= instruction[7], no= instruction[6], out= comp, out = outM, zr= zr, ng= ng);
+
+    // Jumps
+    //p
+    Or(a= zr, b= ng, out= ZrOrNg);
+    Not(in= ZrOrNg, out= p);
+
+    //j1
+    And(a= instruction[2], b= ng, out= jmp1);
+    //j2
+    And(a= instruction[1], b= zr, out= jmp2);
+    //j3
+    And(a= instruction[0], b= p, out= jmp3);
+
+    // ORs
+    Or(a= jmp3, b= jmp2, out= j32);
+    Or(a= j32, b= jmp1, out= j321);
+
+    // opcode
+    And(a= j321, b= instruction[15], out= jL);
+
+    PC(in= aReg, load= jL, inc= true, reset= reset, out[0..14]= pc);
+
 }
