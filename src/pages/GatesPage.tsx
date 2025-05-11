@@ -1,10 +1,9 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import notLogo from './assets/notCircle.png'
-import './App.css'
-import ConnectedCanvas from './components/ConnectedCanvas'
+import reactLogo from '../assets/react.svg';
+import notLogo from '../assets/notCircle.png';
+import '../gates.css';
+import ConnectedCanvas from '../components/ConnectedCanvas';
 
-function App() {
+function GatesPage() {
   return (
     <>
       <div>
@@ -24,4 +23,5 @@ function App() {
   )
 }
 
-export default App
+export default GatesPage;
+
