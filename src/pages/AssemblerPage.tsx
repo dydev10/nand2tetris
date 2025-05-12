@@ -1,9 +1,11 @@
 import { useState, useRef, useEffect, ChangeEvent } from "react";
+import Assembler from "../assembler/Assembler";
 
 export default function ParserPage(): JSX.Element {
   const [input, setInput] = useState<string>("");
   const [output, setOutput] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
   const lineNumbers: string = Array.from({ length: input.split("\n").length }, (_, i) => i + 1).join("\n");
@@ -35,37 +37,34 @@ export default function ParserPage(): JSX.Element {
     const blob = new Blob([output], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
+    const filename = fileInputRef.current?.files?.[0].name;
     a.href = url;
-    a.download = "output.txt";
+    a.download = `${filename?.split('.')[0]}.hack`;
     a.click();
     URL.revokeObjectURL(url);
   };
 
   const generateOutput = async (): Promise<void> => {
     setLoading(true);
-    try {
-      const result = await mockAsyncParser(input);
-      setOutput(result);
-    } catch (error) {
-      setOutput("Error generating output");
-    } finally {
-      setLoading(false);
-    }
-  };
 
-  const mockAsyncParser = async (text: string): Promise<string> => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(text.toUpperCase());
-      }, 1000);
-    });
+    if(fileInputRef.current?.files?.[0]) {
+      try {
+        const assembler = new Assembler(fileInputRef.current.files[0]);
+        const result = await assembler.assemble();
+        setOutput(result);
+      } catch {
+        setOutput("Error generating output");
+      } finally {
+        setLoading(false);
+      }
+    }
   };
 
   return (
     <div className="w-full h-full flex overflow-hidden">
       <div className="w-1/2 h-full flex flex-col font-mono text-sm overflow-auto">
         <div className="p-2 bg-zinc-200 dark:bg-zinc-700 border-b border-zinc-300 dark:border-zinc-600 flex items-center gap-2">
-          <input type="file" accept=".asm" onChange={handleFileChange} className="text-sm" />
+          <input ref={fileInputRef} type="file" accept=".asm" onChange={handleFileChange} id="source-file" className="text-sm" />
           <button
             onClick={generateOutput}
             className="px-3 py-1 text-sm bg-green-600 text-white rounded hover:bg-green-700"
