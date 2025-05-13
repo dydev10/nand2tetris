@@ -25,7 +25,8 @@ class SourceFile {
     }
 
     if (buffer) {
-      yield buffer;
+      const trimmedBuffer = buffer.trim();
+      yield trimmedBuffer;
     }
   }
 }
