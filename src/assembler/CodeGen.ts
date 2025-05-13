@@ -17,14 +17,13 @@ class CodeGen {
   }
 
 
-  numberStringTo15BitBinary = (numberString: string): string | null => {
-    const number = parseInt(numberString, 10);
-
-    if (isNaN(number) || number < 0 || number > 32767) {
+  numberTo15BitBinary = (num: number): string | null => {
+   
+    if (isNaN(num) || num < 0 || num > 32767) {
       return null; // Return null for invalid input
     }
 
-    const binary = number.toString(2);
+    const binary = num.toString(2);
     return binary.padStart(15, '0');
   }
 
@@ -46,8 +45,8 @@ class CodeGen {
   generateCode = (parser: Parser) => {
     const { address, dest, comp, jump } = parser;
 
-    if (address) {
-      this.result = `0${this.numberStringTo15BitBinary(address)}`;
+    if (address !== null) {
+      this.result = `0${this.numberTo15BitBinary(address)}`;
       return;
     }
 

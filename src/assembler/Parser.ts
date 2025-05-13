@@ -1,6 +1,6 @@
 class Parser {
   // label: string | null;
-  address: string | null;
+  address: number | null;
   dest: string | null;
   comp: string | null;
   jump: string | null;
@@ -20,7 +20,8 @@ class Parser {
   }
 
   parseAddress(source: string) {
-    this.address = source.substring(1);
+    const addressStr = source.substring(1);
+    this.address = parseInt(addressStr, 10);
   }
 
   parseCode(source: string) {
