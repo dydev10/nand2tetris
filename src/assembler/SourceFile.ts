@@ -11,14 +11,14 @@ class SourceFile {
       buffer = lines.pop() || '';
 
       for (const line of lines) {
-        const trimmerLine = line.trim();
+        const trimmedLine = line.trim();
         
         // skip empty and comment lines
-        if (!trimmerLine.length || trimmerLine.startsWith('//')) {
+        if (!trimmedLine.length || trimmedLine.startsWith('//')) {
           continue;
         }
 
-        yield line;
+        yield trimmedLine;
       }
 
       ({ value: chunk, done } = await reader.read());
