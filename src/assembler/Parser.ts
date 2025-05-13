@@ -1,16 +1,24 @@
+import SymbolTable from "./SymbolTable";
+
 class Parser {
   // label: string | null;
   address: number | null;
   dest: string | null;
   comp: string | null;
   jump: string | null;
+  skip: boolean;
 
-  constructor(source: string) {
+  symbolTable: SymbolTable;
+
+  constructor(source: string, symbolTable: SymbolTable) {
     // this.label = null;
     this.address = null;
     this.dest = null;
     this.comp = null;
     this.jump = null;
+    this.skip = false;
+
+    this.symbolTable = symbolTable;
 
     this.parse(source);
   }
@@ -21,7 +29,20 @@ class Parser {
 
   parseAddress(source: string) {
     const addressStr = source.substring(1);
-    this.address = parseInt(addressStr, 10);
+    
+    // check if symbol is used or simple address
+    if (isNaN(Number(addressStr))) {
+      const resolved = this.symbolTable.resolve(addressStr);
+      if(resolved !== null) {
+        // symbol already in table
+        this.address = resolved;
+      } else {
+        // allocate new symbol address
+        this.address = this.symbolTable.allocate(addressStr);
+      }
+    } else {
+      this.address = parseInt(addressStr, 10);
+    }
   }
 
   parseCode(source: string) {
@@ -54,12 +75,16 @@ class Parser {
   }
 
   parse(source: string) {
-    const sourceTrimmed = source.trim();
-    
-    if (this.isAddress(sourceTrimmed)) {
-      this.parseAddress(sourceTrimmed);
+    // skip labels
+    if(source.startsWith('(') && source.endsWith(')')) {
+      this.skip = true;
+      return;
+    }
+
+    if (this.isAddress(source)) {
+      this.parseAddress(source);
     } else {
-      this.parseCode(sourceTrimmed);
+      this.parseCode(source);
     }
   }
 }
