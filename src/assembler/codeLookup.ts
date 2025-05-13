@@ -5,10 +5,12 @@ export const DESTINATIONS: LookupTable = {
   "M":      "001",
   "D":      "010",
   "MD":     "011",
+  "DM":     "011", // same as above but swapped identifiers (support both MD and DM)
   "A":      "100",
   "AM":     "101",
   "AD":     "110",
   "AMD":    "111",
+  "ADM":    "111", // same as above but swapped identifiers (support both MD and DM)
 };
 
 export const JUMPS: LookupTable = {
