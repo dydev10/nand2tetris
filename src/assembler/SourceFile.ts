@@ -1,5 +1,5 @@
-class FileHandler {
-  async *streamTextFileLines(file: File): AsyncGenerator<string, void, void> {
+class SourceFile {
+  async *streamSourceLines(file: File): AsyncGenerator<string, void, void> {
     const decoder = new TextDecoder('utf-8');
     const reader = file.stream().getReader();
     let { value: chunk, done } = await reader.read();
@@ -11,6 +11,13 @@ class FileHandler {
       buffer = lines.pop() || '';
 
       for (const line of lines) {
+        const trimmerLine = line.trim();
+        
+        // skip empty and comment lines
+        if (!trimmerLine.length || trimmerLine.startsWith('//')) {
+          continue;
+        }
+
         yield line;
       }
 
@@ -23,4 +30,4 @@ class FileHandler {
   }
 }
 
-export default FileHandler;
+export default SourceFile;

@@ -1,5 +1,5 @@
 import CodeGen from "./CodeGen";
-import FileHandler from "./FileHandler";
+import SourceFile from "./SourceFile";
 import Parser from "./Parser";
 
 class Assembler {
@@ -20,15 +20,13 @@ class Assembler {
   }
 
   async codePass () {
-    const fileHandler = new FileHandler();
+    const sourceFile = new SourceFile();
 
-    for await (const sourceLine of fileHandler.streamTextFileLines(this.file)) {
+    for await (const sourceLine of sourceFile.streamSourceLines(this.file)) {
       const parser = new Parser(sourceLine);
-      if (!parser.skip) {
-        const codeGen = new CodeGen(parser); 
-        this.code += codeGen.result;
-        this.code += '\n';
-      }
+      const codeGen = new CodeGen(parser); 
+      this.code += codeGen.result;
+      this.code += '\n';
     }
   }
 
